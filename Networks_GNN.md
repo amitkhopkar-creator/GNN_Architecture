@@ -26,21 +26,45 @@ $$x = [4, 1, 128, 1000, 2.4, 5.0, 1200, 1, 0, 12]$$
 
 
 ## Ontology for Networking Infrastructure
-A router in a large enterprise or service provider network is more likely a sophisticated appliance; a distributed routing system which Consists of physical chassis, line cards, each line card with multiple ports, each leie card with firmware for data-plane programming, network operating system and applications in the form of networking protocols and management protocols. 
+A router in a large enterprise or service provider network is more likely a sophisticated appliance; a distributed routing system which Consists of physical chassis, line cards, each line card with multiple ports, each line card with firmware for data-plane programming, network operating system and applications in the form of networking protocols and management protocols. 
 
-A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating systems, network applications, management applications, etc. Similarly a virtual Network function is composed of multiple VMs, Containers, DBs, etc. If we flatten such a distributed systems into a single "Router Node," we lose all the granular relationships, failure modes internal to the router, correlation of events, MELT data (like a single optical transceiver failing on a specific sub-port). 
+A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating systems, network applications, management applications, etc. Similarly a Virtual Network Function is composed of multiple VMs, Containers, DBs, etc. 
+If such a distributed systems definition is flattened into a single "Router Node," all the granular relationships between the various components shall be lost. Failure modes internal to the router, correlation of events, MELT data loss ( single optical transceiver failing on a specific sub-port) to control-plane failure such as ISIS, BGP, routing table changes, etc. shall not be available. 
 
-Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. 
+Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. How is such as Heterogenous Graph architected.
 
+**Graph Architecture Principles**
+
+Something should be a `Node` if it can:
+- Fail or degrade independently
+- Participate in fault propagation
+- Have relationships with multiple other entities
+- Be queried or reasoned about in isolation 
+
+Something should be a `Feature` if it: 
+- Belongs exclusively to one entity
+- Is purely descriptive or configural
+- Cannot have relationship with another entity
+- Does not participate in fault propagation 
+
+ACL and QOS objects cannot be a node feature as if it fails the 1st test of belonging to one entity does not hold. Single QoS policy and ACL can be applied to multiple interfaces. Whereas IP address can be, as they are always exclusively tied to one entity, purely configuration, cannot be assigned to multiple interfaces in the same routing context / VRF, and not of significance in fault propagation, i.e a fault is not triggered by an IP address. 
+
+Therefore, IP address, MTU, ISIS metric, mpls enabled flag, admin state can be Node Features 
+ 
 ### Step1: Define Node Types (The Vertices) 
 
-Instead of every node being the same, we group them by their physical or logical entity. For example: 
+Instead of using a single Router node, the system is organised in a class of nodes that represent the router For example: 
 
 | **Node Class** | **Examples** |
 | :--- | :--- |
-| **Physical Devices:** | Routers, Switches, Cell Towers. | 
-| **Logical Components:** | Interfaces/Ports, VRFs (Virtual Routing and Forwarding). | 
-| **Services:** | MPLS VPNs, SD-WAN Overlays. | 
+| **Network Functions:** | Routers, Switches, PGW, SGW, PCRF, A-SBC, I-SBC, P-CSCF, S-CSCF, I-CSCF. | 
+| **Physical Components:** | Chassis, PSU, Fan Tray, RP, Fabric Card, Line card, NPU, Fabric Interconnect, Physical Port, Bare Metal. | 
+| **Virtual Components:** | Port-bundles, Logical Interfaces, VRFs (Virtual Routing and Forwarding) instance, VM (Virtual Machine), Container. |
+| **Network OS:** | SR, IOS-XR, Linux, JunOS. |
+| **Control Apps:** | IGP, BGP, LDP,  PPP. |
+| **Infrastructure Apps:** | NTP, DNS, DHCP. |
+| **Management Apps:** | SNMP, Netconf, gNxI.  |
+| **Services:** | MPLS VPNs, EVPN, PWE3. | 
 | **Subscribers:** | Enterprise Customers, Broadband subscribers, Mobile Users. | 
 
 ### Step 2: Represent the Nested Reality and Complexity (Graph Topology)
