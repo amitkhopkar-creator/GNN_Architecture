@@ -233,8 +233,45 @@ When transit traffic enters `Physical Port 1`, passes through the distributed in
        │                │                     │
        ├── [BFD Proc]   ├── [Local FIB]       └── [LC Buffer Limit]
 ```
+#### Step 2.10: Architectural Guidance for Edge Feature Vectors
 
-#### Step 2.10: Impact on Downstream GNN Use Cases
+While nodes ($x_i$) hold isolated entity attributes, edges ($e_{ij}$) represent the physics, policies, and operational dynamics between those entities. In Graph Neural Networks (GNNs), `edges can store multi-dimensional feature vectors` to pass relational context during node message-passing steps.
+
+When architecting feature vectors for edges, use the following three design patterns:
+
+**1. The Multi-Type Relational Pattern (Static Categorical)**
+Because edges in a router graph represent diverse relationships (`GOVERNED_BY`, `MEMBER_OF`, `TRAVERSES`), the primary edge features are often **One-Hot Encoded Structural Profiles**. 
+
+An edge feature vector $e_{ij}$ can be structured as follows:
+* **Edge Type (One-Hot Encoded):** `[Is_Physical, Is_Logical, Is_Policy, Is_DataPath]`
+* **Directionality/Symmetry:** A binary flag (`1` for directed, `0` for bidirectional) indicating control flow.
+
+**2. The Policy-to-Queue Edge Pattern (Static Threshold Constraints)**
+When an edge connects an operational entity (like a `[VOQ Node]`) to a configuration boundary (like a `[Buffer Limit Node]`), the edge itself should model the **Weight** or **SLA Context** of that constraint. 
+
+For an edge mapped as `[VOQ]` — `GOVERNED_BY` → `[Limit Node]`, the edge vector contains:
+* **Allocation Weights:** If a queue is allocated a specific ratio of a pool (e.g., Weighted Round Robin weight or Strict Priority level).
+* **Oversubscription Factor:** A numerical ratio showing how much the edge relationship allows the queue to burst past nominal thresholds.
+
+**3. The Inter-Component Path Pattern (Dynamic Edge States)**
+For data-plane edges where traffic physically flows (e.g., `[Ingress Card]` — `TRANSMITS_VIA` → `[Fabric]`), the edge feature vector can hold **Dynamic Link States**:
+
+* **Operational Bandwidth / Capacity:** The total available crossbar bandwidth of that specific internal channel (e.g., in Gbps).
+* **Edge Utilization / Congestion Index:** A dynamic scalar calculated as $\frac{\text{Current Throughput}}{\text{Max Fabric Channel Capacity}}$. This allows message-passing algorithms to penalize or flag specific internal structural paths when performing Root Cause Analysis.
+
+---
+
+### Matrix Architecture Overview
+
+To maintain clean separation of concerns, organize your architectural features using this structural matrix:
+
+| Feature Dimension | Node Vector ($x_i$) | Edge Vector ($e_{ij}$) |
+| :--- | :--- | :--- |
+| **Static Attributes** | Entity Type, Physical Model, Software Version | Relationship Class, One-Hot Type, Directional Flag |
+| **Configuration / Limits**| Max Global Buffer Pool, Configured Interface MTU | Assigned Queue Weight, Strict Priority Level, Allocation % |
+| **Dynamic Telemetry** | Current CPU %, Memory Leak Bytes, Queue Depth | Fabric Interconnect Throughput, Link Loss Ratio, Burst Index |
+
+#### Step 2.11: Impact on Downstream GNN Use Cases
 
 * **Predictive Anomaly & Capacity Forecasting:** When a traffic surge hits `[Ingress Port 1]`, the GNN does not just predict interface saturation in isolation. It propagates the traffic attributes down to the `[VOQ Node]` and evaluates its adjacent edge to the `[Line-Card Buffer Limit Node]`. If the incoming traffic volume exceeds the limit node's threshold attribute, the GNN flags a predicted buffer drop anomaly before packets are dropped in production.
 * **Structural Misconfiguration Detection:** If a network engineer applies a global Quality of Service (QoS) policy that conflicts with a specific line card's hardware queuing boundaries, the GNN identifies the anomaly instantly. The model exposes the conflict because the configuration state on the policy node directly violates the hard physical limitations mapped out by the hardware topology edges.
