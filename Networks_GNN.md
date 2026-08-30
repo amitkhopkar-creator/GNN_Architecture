@@ -7,11 +7,11 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
 - Individual edges $$e$$ are a member of $$E$$
   - $$e \in E$$
 
-Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a set of attributes/properties which are called features. These features are encoded as a feature vector $X_v$ for a vertex and $X_e$ for an edge.
+Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $X_v$ for a vertex and $X_e$ for an edge.
 
-In the context of networking infrastructure, network devices, for e.g. routers, can be represented as a set of nodes ($$V$$)> Links connecting these network devices can be represented as a set of edges ($$E$$). Together the node/routers and edges/links form the entire network ($$G$$). Further, a router could have properties encoded in a feature vector  $$x$$ as follows: 
+In the context of networking infrastructure; network devices such as routers, can be represented as a set of vertices ($$V$$). Links connecting these network devices can be represented as a set of edges ($$E$$). Together the node/routers and edges/links form the entire network ($$G$$). Further, a router or a link between two routers could have properties encoded in a feature vector  $$x_v$$ or $$x_e$$ : 
 
-**Router Feature Vector**
+**Example of Router Vertex Feature Vector**
 
 Feature vector representation for a simple, consumer-grade home router (used for machine learning and classification tasks).
 
