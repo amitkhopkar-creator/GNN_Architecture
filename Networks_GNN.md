@@ -79,3 +79,61 @@ The router's internal architecture neatly organizes into distinct Node Types ($V
 * **Service Daemons ($V_{srv}$):** DHCP pools, RADIUS configurations, or L2TP/PPP sessions.
   * `[DHCP Daemon]` — `MONITORS` → `[Logical Interface]`
 
+#### Step 2.5: GNN Context & System Benefits
+
+By mapping the router as an isolated network topology, a **Graph Neural Network (GNN)** can trace dependencies and correlate events across distinct logical and physical layers:
+
+* **Misconfiguration & Change Management:** When a configuration changes on a `[Logical Interface]` is implemented, the model views it as a structural event rather than flat text. It traverses the active path—knowing `[Logical Interface X]` connects via an edge to `[BGP Process Y]`, which peers with a `[Neighbour Router]`—to immediately flag protocol violations relative to adjacent external nodes.
+* **Root Cause Analysis (RCA):** If a `[Fan Tray]` fails and its temperature feature spikes, the GNN uses `COOLS` and `INSTALLED_IN` edges to trace heat dissipation paths directly to `[Line Card 3]`. This clarifies why `[Physical Ports]` on that specific card are dropping packets and causing `[BGP]` states to flap, mapping the entire blast radius back to a physical component.
+* **Anomaly Detection & Capacity Forecasting:** Traffic metrics sit on `[Logical Interface]` or `[Port Bundle]` nodes, while CPU and RAM metrics reside on `[Card]` or `[Processor]` nodes. The network graph allows the GNN to learn the structural correlation between interface traffic surges and localized memory exhaustion on specific internal hardware targets.
+
+#### Step 2.6: Modelling Distributed Software Architectures
+
+In distributed network systems, the main processor card manages global routing logic (Control Plane), while session management (bfd, etc.), packet forwarding, fabric interfaces and buffering are offloaded directly to the local line cards (Data Plane) to handle terabit-scale throughput. 
+
+To model this distributed architecture, the existing graph philosophy remains intact; It is simply extended with specific (hardware, software, and queuing) entities as new node classes. The router sub-graph can be extended with the following definitions:
+
+#### Step 2.7: Distributed Entities, Queues, and Data Paths
+
+* **Line-Card RIB/FIB Nodes:** The global Routing Information Base (RIB) resides on the main Route Processor (RP), but each Line Card utilizes a localized Forwarding Information Base (FIB) programmed directly into its Application-Specific Integrated Circuit (ASIC).
+  * `[Local FIB]` — `PROGRAMMED_BY` → `[Global RIB (on Main CPU)]`
+  * `[Local FIB]` — `RUNS_ON` → `[Line Card ASIC / Processor]`
+
+* **BFD (Bidirectional Forwarding Detection) Nodes:** BFD keepalives run at microsecond intervals (e.g., 10ms) to detect immediate link drops. This high-frequency processing is offloaded straight to the line card hardware.
+  * `[BFD Process]` — `MONITORS` → `[Physical Port]`
+  * `[BFD Process]` — `OFFLOADED_TO` → `[Line Card]`
+
+* **Line Card Resources:** Processing and memory metrics belong specifically to their respective hardware components rather than the global chassis. These are monitored via features attached directly to the component node:
+  * `[Line Card]` Feature Vector = `[ASIC_Temp, LineCard_CPU_%, LineCard_Mem_%]`
+
+* **Backplane / Switch Fabric Nodes:** To model internal traffic movement between distinct cards within the chassis, the Backplane or Fabric Channels are treated as structural interconnects:
+  * `[Line Card 1]` — `TRANSMITS_VIA` → `[Fabric Card / Backplane]` — `DELIVERS_TO` → `[Line Card 2]`
+
+#### Step 2.8: Modeling VOQs (Virtual Output Queuing) and Buffers
+
+Virtual Output Queues (VOQs) prevent head-of-line blocking in distributed architectures. A VOQ resides on an ingress line card but queues packets destined for a specific egress port or card. Because a VOQ maintains its own metrics (e.g., dropped bytes, depth, buffer utilization), it is represented as an independent node:
+
+* **VOQ Nodes:**
+  * `[VOQ Instance A]` — `ALLOCATED_ON` → `[Ingress Line Card]`
+  * `[VOQ Instance A]` — `TARGETS` → `[Egress Physical Port (on another card)]`
+
+* **Threshold & Limit Nodes:** Static configuration thresholds and physical boundaries (global limits vs. localized line-card limits) are modeled as Policy Nodes connected directly to operational queues:
+  * `[VOQ Instance A]` — `GOVERNED_BY` → `[Line-Card Buffer Limit Node]`
+  * `[Line-Card Buffer Limit Node]` — `CONSTRAINED_BY` → `[Global Chassis Pool Limit Node]`
+
+#### Step 2.9: Visualizing the Extended Sub-Graph
+
+When transit traffic enters `Physical Port 1`, passes through the distributed internal architecture, and exits `Physical Port 2`, the GNN traces the packet traversal along the following sequential topological path:
+
+```text
+[Ingress Port 1] ➔ [Ingress Line Card] ➔ [VOQ Node] ➔ [Backplane/Fabric] ➔ [Egress Line Card] ➔ [Egress Port 2]
+                                
+       │                │                     │
+       ├── [BFD Proc]   ├── [Local FIB]       └── [LC Buffer Limit]
+```
+
+#### Step 2.10: Impact on Downstream GNN Use Cases
+
+* **Predictive Anomaly & Capacity Forecasting:** When a traffic surge hits `[Ingress Port 1]`, the GNN does not just predict interface saturation in isolation. It propagates the traffic attributes down to the `[VOQ Node]` and evaluates its adjacent edge to the `[Line-Card Buffer Limit Node]`. If the incoming traffic volume exceeds the limit node's threshold attribute, the GNN flags a predicted buffer drop anomaly before packets are dropped in production.
+* **Structural Misconfiguration Detection:** If a network engineer applies a global Quality of Service (QoS) policy that conflicts with a specific line card's hardware queuing boundaries, the GNN identifies the anomaly instantly. The model exposes the conflict because the configuration state on the policy node directly violates the hard physical limitations mapped out by the hardware topology edges.
+
