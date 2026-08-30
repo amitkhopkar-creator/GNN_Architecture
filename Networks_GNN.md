@@ -1,7 +1,13 @@
 #  GNN for Datacentre, Telco and Enterprise Infrastructure
 
 ## Graphs
-A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ where $$V$$ represents a `set of nodes` and $$E$$ represents a `set of edges` connecting these nodes. Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a set of attributes/properties which are called features. These features are encoded as a feature vector $X_v$.
+A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ where $$V$$ represents a `set of nodes` and $$E$$ represents a `set of edges` connecting these nodes. 
+- Individual vertices $$v$$ are a member of $$V$$
+  - $$v \in V$$
+- Individual edges $$e$$ are a member of $$E$$
+  - $$e \in E$$
+
+Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a set of attributes/properties which are called features. These features are encoded as a feature vector $X_v$ for a vertex and $X_e$ for an edge.
 
 In the context of networking infrastructure, network devices, for e.g. routers, can be represented as a set of nodes ($$V$$)> Links connecting these network devices can be represented as a set of edges ($$E$$). Together the node/routers and edges/links form the entire network ($$G$$). Further, a router could have properties encoded in a feature vector  $$x$$ as follows: 
 
@@ -35,23 +41,40 @@ Therefore for such a system, a Heterogeneous Graph is better equipped to represe
 
 **Graph Architecture Principles**
 
+**Vertex / Nodes ($$v$$)**
+
 Something should be a `Node` if it can:
 - Fail or degrade independently
 - Participate in fault propagation
 - Have relationships with multiple other entities
 - Be queried or reasoned about in isolation 
 
+**Edges / links ($$e$$)**
+
+Individual edges ($$e$$) define relationships between any individual vertex's, for e.g. between $$v_1$$ and $$v_2$$. A certain type of edge relationship is defined in the ontology through a Triple syntax `[Vertex1]` — `PREDICATE` → `[Vertex2]`  
+
+**PREDICATE's could be defined by the Graph architect such as**
+
+- CONTAINS – slot contains card, card contains port, port contains sub-port
+- HOSTS – sub-port hosts logical interface
+- RUNS – logical interface runs ISIS, BGP, SR-TE, etc.
+- INSTALLED-IN – line cards installed in a chassis slot
+- CARRIES – logical interface carrier customer VPN
+- MEMBER_OF – logical interface is a member of TE tunnel path
+- PEERS_WITH – BGP session to route reflector 
+
+ **Features ($$x$$)**
+
 Something should be a `Feature` if it: 
-- Belongs exclusively to one entity
+- Belongs exclusively to one entity [($$v$$) or ($$e$$)]
 - Is purely descriptive or configural
 - Cannot have relationship with another entity
 - Does not participate in fault propagation 
 
 ACL and QOS objects cannot be a node feature as if it fails the 1st test of belonging to one entity does not hold. Single QoS policy and ACL can be applied to multiple interfaces. Whereas IP address can be, as they are always exclusively tied to one entity, purely configuration, cannot be assigned to multiple interfaces in the same routing context / VRF, and not of significance in fault propagation, i.e a fault is not triggered by an IP address. 
-
 Therefore, IP address, MTU, ISIS metric, mpls enabled flag, admin state can be Node Features 
- 
-### Step1: Define Node Types (The Vertices) 
+
+### Step1: Define Node Types (Vertices) 
 
 Instead of using a single Router node, the system is organised in a class of nodes that represent the router For example: 
 
@@ -75,30 +98,30 @@ The router's internal architecture neatly organizes into distinct Node Types ($V
 
 #### Step 2.1: Hardware Nodes & Edges (The Physical Backbone)
 
-* **Chassis Node ($V_{chassis}$):** The parent root of the physical device.
-* **Power Supply Node ($V_{psu}$):**
+* **Chassis Vertex ($V_{chassis}$):** The parent root of the physical device.
+* **Power Supply Vertex ($V_{psu}$):**
   * `[Power Supply]` — `POWERs` → `[Chassis]`
-* **Fan Tray Node ($V_{fan}$):**
+* **Fan Tray Vertex ($V_{fan}$):**
   * `[Fan Tray]` — `COOLS` → `[Chassis]`
-* **Card Nodes ($V_{card}$):** Fabric, Processor, and Line cards.
+* **Card Vertex ($V_{card}$):** Fabric, Processor, and Line cards.
   * `[Line Card]` — `INSTALLED_IN` → `[Chassis]`
-* **Port Nodes ($V_{port}$):** Physical Transceivers and Interfaces.
+* **Port Vertex ($V_{port}$):** Physical Transceivers and Interfaces.
   * `[Physical Port]` — `RESIDES_ON` → `[Line Card]`
 
-#### Step 2.2: Logical Nodes & Edges (The Virtual Layer)
+#### Step 2.2: Logical Vertices & Edges (The Virtual Layer)
 
 * **Port Bundles ($V_{lag}$):** Link Aggregation Groups (LAG / LACP / EtherChannel).
   * `[Physical Port]` — `MEMBER_OF` → `[Port Bundle]`
 * **Logical Interfaces ($V_{lif}$):** Sub-interfaces, Loopbacks, and VLANs.
   * `[Logical Interface]` — `BOUND_TO` → `[Port Bundle]` OR `[Physical Port]`
 
-#### Step 2.3: Protocol & Application Nodes (The Software Layer)
+#### Step 2.3: Protocol & Application Vertex (The Software Layer)
 
 * **Routing Instances ($V_{proto}$):** BGP, OSPF, or IS-IS processes running on specific processor cards.
   * `[BGP Process]` — `RUNS_ON` → `[Processor Card]`
   * `[Logical Interface]` — `PARTICIPATES_IN` → `[OSPF Process]`
 
-#### Step 2.4: Subscriber Services (The Service Layer)
+#### Step 2.4: Subscriber Services Vertex (The Service Layer)
 
 * **Service Daemons ($V_{srv}$):** DHCP pools, RADIUS configurations, or L2TP/PPP sessions.
   * `[DHCP Daemon]` — `MONITORS` → `[Logical Interface]`
