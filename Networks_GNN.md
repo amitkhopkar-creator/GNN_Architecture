@@ -168,6 +168,17 @@ Virtual Output Queues (VOQs) prevent head-of-line blocking in distributed archit
   * `[VOQ Instance A]` — `GOVERNED_BY` → `[Line-Card Buffer Limit Node]`
   * `[Line-Card Buffer Limit Node]` — `CONSTRAINED_BY` → `[Global Chassis Pool Limit Node]`
 
+A line card may have one or more NPUs installed in it. the NPU has a buffer of 4GB. Should this buffer limit be encoded as a feature directly inside the NPU vertex or should it be encoded under an NPU_Constrains vertex wtih a CONSTRAINED_BY predicate between NPU and  NPU_Constrains Vertices.
+
+A line card doesn't just have one constraint; it might have dozens (buffer limits, TCAM table limits, ACL entry caps, maximum power draw, thermal thresholds).
+
+*As Features:*
+- Adding 4GB as a feature will provide a better performance.
+- If the vendor releases a new firmware that allows more efficient use of the buffer such that an oversubscription of 20% is supported. A single policy across the entire graph ($$G$$). Every single individual NPU vertex of that model type has to be updated . Even a single miss and data becomes inconsistent .
+
+*As a Policy Node:*
+You define the policy once as a single NPU_Constrains node. If 500 different  linecards in the graph share that exactNPU, all 500 nodes point to that one central policy vertex. If the manufacturer updates the buffer allocation via a firmware patch, you update one node instead of 500.
+
 #### Step 2.9: Visualizing the Extended Sub-Graph
 
 When transit traffic enters `Physical Port 1`, passes through the distributed internal architecture, and exits `Physical Port 2`, the GNN traces the packet traversal along the following sequential topological path:
