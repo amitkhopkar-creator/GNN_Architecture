@@ -61,9 +61,9 @@ Instead of using a single Router node, the system is organised in a class of nod
 | **Physical Components:** | Chassis, PSU, Fan Tray, RP, Fabric Card, Line card, NPU, Fabric Interconnect, Physical Port, Bare Metal. | 
 | **Virtual Components:** | Port-bundles, Logical Interfaces, VRFs (Virtual Routing and Forwarding) instance, VM (Virtual Machine), Container. |
 | **Network OS:** | SR, IOS-XR, Linux, JunOS. |
-| **Control Apps:** | IGP, BGP, LDP,  PPP. |
+| **Control Apps:** | IGP, BGP, LDP, BFD, PPP, TWAMP. |
 | **Infrastructure Apps:** | NTP, DNS, DHCP. |
-| **Management Apps:** | SNMP, Netconf, gNxI.  |
+| **Management Apps:** | SNMP, Netconf, gNxI, Syslog.  |
 | **Services:** | MPLS VPNs, EVPN, PWE3. | 
 | **Subscribers:** | Enterprise Customers, Broadband subscribers, Mobile Users. | 
 
