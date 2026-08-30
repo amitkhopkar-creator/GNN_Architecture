@@ -177,7 +177,7 @@ A line card doesn't just have one constraint; it might have dozens (buffer limit
 - If the vendor releases a new firmware that allows more efficient use of the buffer such that an oversubscription of 20% is supported. A single policy across the entire graph ($$G$$). Every single individual NPU vertex of that model type has to be updated . Even a single miss and data becomes inconsistent .
 
 *As a Policy Node:*
-You define the policy once as a single NPU_Constrains node. If 500 different  linecards in the graph share that exactNPU, all 500 nodes point to that one central policy vertex. If the manufacturer updates the buffer allocation via a firmware patch, you update one node instead of 500.
+- Once as a single NPU_Constrains node is defined, if 500 different line cards in the graph share that exact NPU, all 500 nodes point to that one central policy vertex. If the manufacturer updates the buffer allocation via a firmware patch, you update one node instead of 500.
 
 #### Step 2.9: Visualizing the Extended Sub-Graph
 
