@@ -7,7 +7,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
 - Individual edges $$e$$ are a member of $$E$$
   - $$e \in E$$
 
-Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $X_v$ for a vertex and $X_e$ for an edge.
+Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge.
 
 In the context of networking infrastructure; network devices such as routers, can be represented as a set of vertices ($$V$$). Links connecting these network devices can be represented as a set of edges ($$E$$). Together the node/routers and edges/links form the entire network ($$G$$). Further, a router or a link between two routers could have properties encoded in a feature vector  $$x_v$$ or $$x_e$$ : 
 
@@ -35,7 +35,7 @@ $$x = [4, 1, 128, 1000, 2.4, 5.0, 1200, 1, 0, 12]$$
 A router in a large enterprise or service provider network is more likely a sophisticated appliance; a distributed routing system which Consists of physical chassis, line cards, each line card with multiple ports, each line card with firmware for data-plane programming, network operating system and applications in the form of networking protocols and management protocols. 
 
 A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating systems, network applications, management applications, etc. Similarly a Virtual Network Function is composed of multiple VMs, Containers, DBs, etc. 
-If such a distributed systems definition is flattened into a single "Router Node," all the granular relationships between the various components shall be lost. Failure modes internal to the router, correlation of events, MELT data loss ( single optical transceiver failing on a specific sub-port) to control-plane failure such as ISIS, BGP, routing table changes, etc. shall not be available. 
+If such a distributed systems definition is flattened into a single "Router Node," all the granular relationships between the various components shall be lost. Failure modes internal to the router, correlation of events, linking MELT data loss ( single optical transceiver failing on a specific sub-port) to control-plane failure such as ISIS, BGP, routing table changes, etc. shall not be available. 
 
 Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. How is such as Heterogenous Graph architected.
 
@@ -43,7 +43,7 @@ Therefore for such a system, a Heterogeneous Graph is better equipped to represe
 
 **Vertex / Nodes ($$v$$)**
 
-Something should be a `Node` if it can:
+Something should be a `Vertex / Node` if it can:
 - Fail or degrade independently
 - Participate in fault propagation
 - Have relationships with multiple other entities
@@ -51,7 +51,9 @@ Something should be a `Node` if it can:
 
 **Edges / links ($$e$$)**
 
-Individual edges ($$e$$) define relationships between any individual vertex's, for e.g. between $$v_1$$ and $$v_2$$. A certain type of edge relationship is defined in the ontology through a Triple syntax `[Vertex1]` — `PREDICATE` → `[Vertex2]`  
+Individual edges ($$e$$) define relationships between any individual vertex's, for e.g. a link $$e$$ connecting $$v_1$$ and $$v_2$$. A certain type of edge relationship is defined in the ontology through a Triple syntax `[Vertex1]` — `PREDICATE` → `[Vertex2]`.
+
+A predicate is the part of a sentence that contains the verb and tells what action the subject is doing or what state the subject is in.
 
 **PREDICATE's could be defined by the Graph architect such as**
 
@@ -178,6 +180,48 @@ A line card doesn't just have one constraint; it might have dozens (buffer limit
 
 *As a Policy Node:*
 - Once as a single NPU_Constrains node is defined, if 500 different line cards in the graph share that exact NPU, all 500 nodes point to that one central policy vertex. If the manufacturer updates the buffer allocation via a firmware patch, you update one node instead of 500.
+
+**State from Spec (Mutable vs. Immutable)**
+
+In a network graph, nodes usually track **live operational state**, while policy nodes track **static engineering boundaries**.
+
+*   **ASIC Node Features:** Track highly volatile, fast-changing real-time telemetry metrics.
+    *   `current_buffer_utilization: "1.2GB"`
+    *   `current_temperature: "54C"`
+    *   `link_status: "ACTIVE"`
+*   **Policy Node Features:** Track completely static physical or firmware-defined limits.
+    *   `max_buffer_allowed: "4GB"`
+    *   `critical_temp_threshold: "85C"`
+
+> [!TIP]
+> **Why split them?** Mixing rapid-fire live telemetry data with permanent engineering specs in the exact same feature vector ($X_v$) degrades graph database indexing performance. It also makes data normalization incredibly difficult for Machine Learning models.
+
+---
+
+**Structural Graph Queries & GNN Message Passing**
+
+Separating policies into their own nodes transforms a simple property filter into a powerful structural relationship. This optimizes both standard database lookups and Machine Learning operations.
+
+**Graph Database Traversal (e.g., Neo4j Cypher)**
+If you want to find or audit all hardware units bound by a specific limitation, structural traversals do not require scanning the internal property fields of every single node in your database:
+
+*   **Property Filtering (Slow):** 
+    ```cypher
+    MATCH (a:ASIC) 
+    WHERE a.buffer_limit = '4GB' AND a.firmware = 'v2.1'
+    RETURN a
+    ```
+*   **Structural Traversal (Fast):** 
+    ```cypher
+    MATCH (p:Policy {id: '4GB_Limit'})<-[:HAS_CONSTRAINT]-(a:ASIC)
+    RETURN a
+    ```
+
+**Graph Neural Networks (GNN) Context**
+For a GNN, representing the constraint as a distinct node allows the network's message-passing layers to learn the structural impact of a policy across different hardware vendors:
+
+*   **As Node Features:** The network only learns that a specific node has a `4GB` attribute.
+*   **As a Policy Node:** The GNN aggregates embeddings across the `HAS_CONSTRAINT` edge ($X_e$). The model can naturally learn topology-wide patterns, such as how a single shared buffer limitation impacts downstream congestion or causes cascading dropouts across entirely different paths in the network.
 
 #### Step 2.9: Visualizing the Extended Sub-Graph
 
