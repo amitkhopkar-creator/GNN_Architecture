@@ -271,7 +271,16 @@ To maintain clean separation of concerns, organize your architectural features u
 | **Configuration / Limits**| Max Global Buffer Pool, Configured Interface MTU | Assigned Queue Weight, Strict Priority Level, Allocation % |
 | **Dynamic Telemetry** | Current CPU %, Memory Leak Bytes, Queue Depth | Fabric Interconnect Throughput, Link Loss Ratio, Burst Index |
 
-## Step 2.11: Cross-Layer Blast Radius & Unified Service Modeling (Multi-Layer N+K Failures)
+
+#### Step 2.12: Impact on Downstream GNN Use Cases
+
+* **Predictive Anomaly & Capacity Forecasting:** When a traffic surge hits `[Ingress Port 1]`, the GNN does not just predict interface saturation in isolation. It propagates the traffic attributes down to the `[VOQ Node]` and evaluates its adjacent edge to the `[Line-Card Buffer Limit Node]`. If the incoming traffic volume exceeds the limit node's threshold attribute, the GNN flags a predicted buffer drop anomaly before packets are dropped in production.
+* **Structural Misconfiguration Detection:** If a network engineer applies a global Quality of Service (QoS) policy that conflicts with a specific line card's hardware queuing boundaries, the GNN identifies the anomaly instantly. The model exposes the conflict because the configuration state on the policy node directly violates the hard physical limitations mapped out by the hardware topology edges.
+
+# WORK IN PROGRESS FROM THIS POINT ONWARD
+## Multi-Domain Ontologies
+
+### Step 4.1: Cross-Layer Blast Radius & Unified Service Modeling (Multi-Layer N+K Failures)
 
 N+K resilience pattern is quite common in H.A designs. It could be applied to N+K fabric cards inside a distributed router, N+K central services for RADIUS, DNS, UPF, SMF, and more.
 The Virtual Aggregator Pattern scales seamlessly from low-level hardware structures to high-level Service Level Objectives (SLOs) and Subscriber Service Modeling. 
@@ -280,7 +289,7 @@ By utilizing **Virtual Service Domains** or **Virtual Aggregate vertex** for fab
 
 ---
 
-### 1. Unified Multi-Layer Ontology Architecture
+#### 1. Unified Multi-Layer Ontology Architecture
 
 When mapped comprehensively, the ontology stack is a continuous hierarchy of dependencies connected by distinct virtual aggregators:
 
@@ -310,7 +319,7 @@ When mapped comprehensively, the ontology stack is a continuous hierarchy of dep
 
 ---
 
-### 2. Anatomy of a Multi-Layer Cascading Failure
+#### 2. Anatomy of a Multi-Layer Cascading Failure
 
 Let us trace exactly how a physical failure propagates through this multi-layered graph during GNN message-passing iterations:
 
@@ -335,7 +344,7 @@ Let us trace exactly how a physical failure propagates through this multi-layere
 
 ---
 
-### 3. Why This Changes the Game for GNN Operations
+#### 3. Why This Changes the Game for GNN Operations
 
 Without this topological structure, a traditional rule engine or standalone telemetry collector would throw thousands of disconnected alerts simultaneously: *Fan Alarm! Fabric Drop! BGP Flap! RADIUS Timeout! Customer Disconnects!*
 
@@ -345,9 +354,159 @@ By establishing this unified hierarchy of physical-to-logical domain aggregators
 * **Predictive Capacity Planning for Services:** If traffic metrics trend upward on Layer 1, the GNN mathematically pushes those parameters up through the aggregators to forecast exactly when the $N+K$ boundaries of critical central applications (like DNS queries per second) will be breached.
 * **Universal Feature Matrix Design:** You can reuse the exact same node and edge template code for a physical hardware cluster as you do for a microservices cluster. Both take an array of child features, process them via an aggregation function (like `Sum` or `Mean`), and output a single health vector to their parent edge.
 
+## Step 2.14: Cross-Domain Service Modeling & Federated Topology
 
-#### Step 2.12: Impact on Downstream GNN Use Cases
+When network infrastructure spans separate administrative domains, sharing low-level graph topologies (such as raw line-card metrics, queue depths, or exact system paths) violates security policies and creates scaling bottlenecks. 
 
-* **Predictive Anomaly & Capacity Forecasting:** When a traffic surge hits `[Ingress Port 1]`, the GNN does not just predict interface saturation in isolation. It propagates the traffic attributes down to the `[VOQ Node]` and evaluates its adjacent edge to the `[Line-Card Buffer Limit Node]`. If the incoming traffic volume exceeds the limit node's threshold attribute, the GNN flags a predicted buffer drop anomaly before packets are dropped in production.
-* **Structural Misconfiguration Detection:** If a network engineer applies a global Quality of Service (QoS) policy that conflicts with a specific line card's hardware queuing boundaries, the GNN identifies the anomaly instantly. The model exposes the conflict because the configuration state on the policy node directly violates the hard physical limitations mapped out by the hardware topology edges.
+Instead, each administrative boundary constructs an internal containment graph and exposes only an abstracted **Boundary Service Node** (\(V_{boundary}\)) to a multi-domain federation layer. This allows a cross-domain Graph Neural Network to calculate end-to-end service issues while preserving data privacy and operational isolation.
+
+---
+
+### 1. Cross-Domain Federated Architecture
+
+The shared Cross-Domain Service Layer functions as an abstraction plane. It treats each independent administrative network as a single macro-node or a small cluster of top-level service checkpoints:
+
+```text
+ ╔══════════════════════════════════════════════════════════════════════════════════╗
+ ║                     SHARED CROSS-DOMAIN SERVICE LAYER (FedGNN)                   ║
+ ║                                                                                  ║
+ ║  [End-to-End Broadband Service] ──► [Transport Endpoint] ──► [AAA Service Check] ║
+ ╚═══════════════════════▲══════════════════════▲═══════════════════════▲══════════╝
+                         │                      │                       │
+ ┌───────────────────────┼──────────────────────┼───────────────────────┼──────────┐
+ │  ADMIN DOMAIN A       │      ADMIN DOMAIN B  │       ADMIN DOMAIN C  │          │
+ │  (IP Transport Team)  │      (ISP Core Team) │       (Systems Team)  │          │
+ │                       │                      │                       │          │
+ │  [Virtual Fabric]     │      [BNG Edge]      │       [RADIUS Cluster]│          │
+ │         ▲             │          ▲           │              ▲        │          │
+ │         │             │          │           │              │        │          │
+ │  [Line Cards/Ports] ──┘      [DHCP Pools] ───┘       [DB Shards] ────┘          │
+ └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 2. How Domains Expose and Structure the Boundary Node
+
+The Boundary Node acts as a secure API or data contract between administrative teams. It converts complex internal graph networks into a standardized **Cross-Domain Feature Vector**:
+
+```latex
+\(\mathbf{x}_\){boundary} \(= [\text{Availability}, \text{Transit\_Latency}, \text{Error\_Rate}, \text{Capacity\_Buffer}, \text{Security\_State}]
+%%\)MAGIT_PARSER_PROTECT%%```
+
+Each domain computes its exposed boundary node features using its own private internal logic:
+
+#### Domain A: IP Transport Network
+* **What it hides:** Internal fiber paths, optical power metrics, line card temperatures, and fabric redundancy states ($N+M$).
+* **What it exposes via the Boundary Node:** 
+  * `Availability`: Structural path availability score (e.g., `0.9999`).
+  * `Transit_Latency`: Dynamic link-state latency across the backbone (e.g., `12ms`).
+  * `Capacity_Buffer`: Remaining assignable bandwidth before backbone congestion occurs.
+
+#### Domain B: ISP Core Services (BNG & AAA Access)
+* **What it hides:** Localized DHCP pool exhaustion rates, sub-interface configurations, and BFD timers on edge cards.
+* **What it exposes via the Boundary Node:**
+  * `Error_Rate`: Authenticaton failure trends (e.g., % of PPPoE or IPoE setup failures).
+  * `Security_State`: One-hot encoded status of edge threat-mitigation protocols (e.g., `[Nominal, Under DDoS, Mitigating]`).
+
+#### Domain C: Internet Systems & Infrastructure (DNS / RADIUS / Portals)
+* **What it hides:** Database replication lag, server CPU utilization, microservice container restarts, and VM hypervisor allocations.
+* **What it exposes via the Boundary Node:**
+  * `Transaction_Speed`: Mean time to resolve an external DNS query or authorize a RADIUS packet.
+  * `Capacity_Buffer`: Active cluster queries-per-second (QPS) relative to hard load boundaries.
+
+---
+
+### 3. Executing Cross-Domain Issue Isolation via GNN Message Passing
+
+When an end-to-end broadband service experiences degradation, the cross-domain GNN performs root-cause isolation by evaluating messages strictly passing between the exposed boundary nodes:
+
+1. **Step 1: Inter-Domain Dependency Mapping:** The shared service layer registers directed edges representing external prerequisites:
+   * `[End-to-End Broadband Service]` ➔ `DEPENDS_ON` ➔ `[AAA Service Check (Dom C)]`
+   * `[End-to-End Broadband Service]` ➔ `TRAVERSES` ➔ `[Transport Endpoint (Dom A)]`
+
+2. **Step 2: Federated Message Passing:** If subscribers experience dropouts, the GNN pulls the abstract vectors from Domains A, B, and C simultaneously. 
+   * **Domain A Vector:** Shows `Transit_Latency: 12ms`, `Availability: 1.0` (Healthy).
+   * **Domain C Vector:** Shows `Transaction_Speed: 850ms` (Anomalous Spike), `Capacity_Buffer: 0.05` (Exhausted).
+
+3. **Step 3: Boundary Localized Isolation:** The GNN isolates the failure vector directly to the `[AAA Service Check]` boundary node. It triggers an alert targeted specifically to the Domain C administrative group: 
+   > **System Alert:** End-to-End service degradation traced to Domain C boundary anomalies. Internal root-cause analysis is delegated to Domain C's localized operations platform.
+
+4. **Step 4: Internal Recursive Resolution:** Domain C's private GNN receives the alert. Because it has full access to its internal graph topology, it traces the `Transaction_Speed` spike down to its internal microservices layer, revealing that a hidden backend database shard has stalled.
+
+### 4. Benefits of this Federated Architecture
+
+* **Absolute Cryptographic & Policy Privacy:** No proprietary topology or internal IP addressing schemes escape their respective administrative environments.
+* **Massive Graph Decoupling:** Instead of running a single, massive GNN over millions of nodes (which causes memory explosion), you execute small, highly efficient local GNN models that feed a lightweight macro-GNN model at the cross-domain service layer.
+* **Deterministic Contract Verification:** If Domain A claims its transport network is completely healthy via its boundary node, but the external service fails, the Cross-Domain GNN can use verification proofs to determine whether the issue is a genuine application fault in Domain C or an unreported transport anomaly.
+
+## Step 2.15: The Pipeline Mechanics — How a Local Domain Generates its Abstracted Node
+
+An abstracted virtual node is created through a localized three-step pipeline: **Collect & Graph**, **Reduce & Abstract**, and **Publish to the Federation Mesh**. 
+
+This process runs completely inside the local domain's secure perimeter. The outside world never sees the raw components; they only see the finalized, exported virtual node.
+
+```text
+ ┌─────────────────────────────────────────────────────────────────────────────┐
+ │ LOCAL DOMAIN INTERNAL BOUNDARY                                              │
+ │                                                                             │
+ │ [Step 1: Collect & Graph]      [Step 2: Reduce & Abstract]                  │
+ │  Raw Telemetry (gNMI/Snmp)       Local GNN or Math Function                 │
+ │  ┌───────────────┐                                                          │
+ │  │ millions of   │ ────────►  Aggregates downstream state  ──┐              │
+ │  │ raw nodes/KPIs│            into 5 core dimensions.        │              │
+ │  └───────────────┘                                           ▼              │
+ └──────────────────────────────────────────────────────────────┼──────────────┘
+                                                                │ [Step 3: Publish]
+                                                                ▼ Secure JSON API
+ ╔═════════════════════════════════════════════════════════════════════════════╗
+ ║ CROSS-DOMAIN FEDERATION LAYER                                               ║
+ ║                                                                             ║
+ ║  Exposed Boundary Node Vector: [1.0, 12ms, 0.01, 0.45, Nominal]             ║
+ ╚═════════════════════════════════════════════════════════════════════════════╝
+```
+
+---
+
+### Step 1: Collect & Graph (Internal Infrastructure Tracking)
+The local domain’s network controller constantly ingests raw streaming telemetry (via gNMI, SNMP, or Syslog). It constructs its own internal, detailed graph topology.
+
+* **Example (Domain A - IP Transport Team):** The team monitors **5,000 fiber links, 400 chassis, 2,000 line cards, and 50,000 interfaces**. They capture raw database entries, interface packet drops, optical power drops, and fan speeds.
+
+### Step 2: Reduce & Abstract (The Vector Extraction Function)
+The local domain runs an automated function (either a localized GNN or a deterministic mathematical script) that condenses the massive graph down to a standard 5-dimensional array. 
+
+This is done using **structural pooling** or **readout functions**. The internal controller calculates these five universal metrics:
+
+1. **Availability Metric:** Calculates the percentage of active redundant internal paths. If 2 out of 10 core links are down, but backup paths are handling traffic perfectly, availability is calculated and output as `1.0`.
+2. **Latency Metric:** Takes the rolling average of path latency across the edge borders (e.g., `12ms`).
+3. **Error Rate Metric:** Aggregates packet loss across external boundary interfaces (e.g., `0.01%`).
+4. **Capacity Buffer Metric:** Computes `Remaining Bandwidth / Total Design Capacity` (e.g., `0.45` means 45% of the network highway is still completely empty and available).
+5. **Security State:** Translates local firewall/DDoS telemetry into a clean categorical feature (e.g., `[1, 0, 0]` via one-hot encoding to mean "Nominal").
+
+### Step 3: Publish to the Federation Mesh (Exposing the Node)
+Once the 5-dimensional vector is calculated, the local domain's system exposes it to the shared Cross-Domain Service Layer. 
+
+This is typically implemented as a **secure microservice endpoint (REST/gRPC)** or published to a **shared Kafka/Event bus** that the cross-domain GNN subscribes to. 
+
+#### The Exposed Data Contract (JSON Example)
+The local domain pushes a clean schema definition that matches what the master cross-domain GNN expects. The internal complexity is fully hidden behind these properties:
+
+```json
+{
+  "domain_id": "DOM_A_TRANSPORT",
+  "boundary_node_type": "TRANSIT_PATH",
+  "timestamp": "2026-08-31T01:24:00Z",
+  "feature_vector": [1.0, 12.0, 0.0001, 0.45, 1, 0, 0],
+  "connected_to_external_endpoints": [
+    "DOM_B_BNG_EDGE_PORT_01",
+    "DOM_C_RADIUS_CORE_IN_02"
+  ]
+}
+```
+
+---
+
+### How the Cross-Domain Layer Uses It
+The master Cross-Domain GNN reads this JSON. It doesn't know *why* the capacity buffer dropped from `0.45` to `0.05` (it doesn't care if it was a line card failure, an optical fiber cut, or a software bug). It only sees that **Domain A's capacity is exhausted**, allowing it to immediately deduce that Domain A is the bottleneck causing the end-to-end subscriber service speed to drop.
 
