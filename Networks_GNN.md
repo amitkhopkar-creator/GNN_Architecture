@@ -1,7 +1,7 @@
 #  GNN for Datacentre, Telco and Enterprise Infrastructure
 
 ## Graphs
-A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ where $$V$$ represents a `set of nodes` and $$E$$ represents a `set of edges` connecting these nodes. 
+A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ where $$V$$ represents a `set of vertices` and $$E$$ represents a `set of edges` connecting these nodes. 
 - Individual vertices $$v$$ are a member of $$V$$
   - $$v \in V$$
 - Individual edges $$e$$ are a member of $$E$$
@@ -34,10 +34,10 @@ $$x = [4, 1, 128, 1000, 2.4, 5.0, 1200, 1, 0, 12]$$
 ## Ontology for Networking Infrastructure
 A router in a large enterprise or service provider network is more likely a sophisticated appliance; a distributed routing system which Consists of physical chassis, line cards, each line card with multiple ports, each line card with firmware for data-plane programming, network operating system and applications in the form of networking protocols and management protocols. 
 
-A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating systems, network applications, management applications, etc. Similarly a Virtual Network Function is composed of multiple VMs, Containers, DBs, etc. 
+A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating system, network applications, management applications, etc. Similarly a Virtual Network Function is composed of multiple VMs, Containers, DBs, etc. 
 If such a distributed systems definition is flattened into a single "Router Node," all the granular relationships between the various components shall be lost. Failure modes internal to the router, correlation of events, linking MELT data loss ( single optical transceiver failing on a specific sub-port) to control-plane failure such as ISIS, BGP, routing table changes, etc. shall not be available. 
 
-Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. How is such as Heterogenous Graph architected.
+Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. Let's explore the architecture of such a Heterogenous Graph architected.
 
 **Graph Architecture Principles**
 
