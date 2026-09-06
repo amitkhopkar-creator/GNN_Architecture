@@ -59,7 +59,8 @@ A predicate is the part of a sentence that contains the verb and tells what acti
 
 - CONTAINS – slot contains card, card contains port, port contains sub-port
 - HOSTS – sub-port hosts logical interface
-- RUNS – logical interface runs ISIS, BGP, SR-TE, etc.
+- PARTICIPATES-IN – logical interface participants in ISIS, BGP, SR-TE, BFD, etc. processes
+- RUNS - the route processor runs ISIS, OSPF, BGP, etc.
 - INSTALLED-IN – line cards installed in a chassis slot
 - CARRIES – logical interface carrier customer VPN
 - MEMBER_OF – logical interface is a member of TE tunnel path
