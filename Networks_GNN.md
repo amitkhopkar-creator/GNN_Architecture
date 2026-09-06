@@ -37,7 +37,7 @@ A router in a large enterprise or service provider network is more likely a soph
 A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating system, network applications, management applications, etc. Similarly a Virtual Network Function is composed of multiple VMs, Containers, DBs, etc. 
 If such a distributed systems definition is flattened into a single "Router Node," all the granular relationships between the various components shall be lost. Failure modes internal to the router, correlation of events, linking MELT data loss ( single optical transceiver failing on a specific sub-port) to control-plane failure such as ISIS, BGP, routing table changes, etc. shall not be available. 
 
-Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. Let's explore the architecture of such a Heterogenous Graph architected.
+Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. Let's explore the architecture of such a Heterogenous Graph.
 
 **Graph Architecture Principles**
 
@@ -74,8 +74,8 @@ Something should be a `Feature` if it:
 - Cannot have relationship with another entity
 - Does not participate in fault propagation 
 
-ACL and QOS objects cannot be a node feature as if it fails the 1st test of belonging to one entity does not hold. Single QoS policy and ACL can be applied to multiple interfaces. Whereas IP address can be, as they are always exclusively tied to one entity, purely configuration, cannot be assigned to multiple interfaces in the same routing context / VRF, and not of significance in fault propagation, i.e a fault is not triggered by an IP address. 
-Therefore, IP address, MTU, ISIS metric, mpls enabled flag, admin state can be Node Features 
+ACL and QOS objects cannot be a feature attached to a vertex. A QoS or ACL fails the 1st principle of features of belonging exclusively to one entity. A single QoS policy and ACL can be applied to multiple interfaces. Whereas IP address can be a feature, as they are always exclusively tied to one entity, purely configuration, cannot be assigned to multiple interfaces in the same routing context / VRF, and not of significance in fault propagation, i.e. a fault is not triggered by an IP address. 
+Therefore, IP address, MTU, ISIS metric, mpls enabled flag, admin state can be Features of a vertex 
 
 ### Step1: Define Node Types (Vertices) 
 
