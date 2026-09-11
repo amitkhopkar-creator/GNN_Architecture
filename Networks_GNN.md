@@ -38,7 +38,8 @@ A graph that does not contain self-loop edges but contains edges and multiple ed
 **Simple Graph**   
 A graph that does not contain self-loop edges or  multiple edges but is constructed only using edges is called a simple grpah
 
-
+**Subgraph**  
+A smaller part of a large graph is called a subgraph. The only strict rule is that you cannot have an edge without its endpoints. if you have a main graph with vertices $$v_1$$, $$v_2$$, $$v_3$$, $$v_4$$ in the shape of a square then $$v_1$$, $$e_1$$, $$v_2$$ would be a valid subgraph 
 
 ## Features
 
