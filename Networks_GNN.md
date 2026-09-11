@@ -2,10 +2,14 @@
 
 ## Graphs
 A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ where $$V$$ represents a `set of vertices` and $$E$$ represents a `set of edges` connecting these nodes. 
-- Individual vertices $$v$$ are a member of $$V$$
-  - $$v \in V$$
-- Individual edges $$e$$ are a member of $$E$$
-  - $$e \in E$$
+- Individual vertices $$v_1$$ to $$v_n$$ are all members of $$V$$
+  - \$`V = \{v_1, v_2, ...v_k,..., v_n\}`$
+  - vertices can exist independently without being connected to any edges
+     
+- Individual edges $$e_1$$ to $$e_m$$ are all members of $$E$$
+  - \$`E = \{e_1, e_2, ...e_k,..., e_m\}`$
+  - since edges connect two vertices there must be two vertices, one on each end of the node
+  - the only exception is when an edge connects back into the origination node looping onto itself.
 
 Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge.
 
