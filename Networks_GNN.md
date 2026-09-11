@@ -47,8 +47,11 @@ $$x = [4, 1, 128, 1000, 2.4, 5.0, 1200, 1, 0, 12]$$
 ## Ontology for Networking Infrastructure
 A router in a large enterprise or service provider network is more likely a sophisticated appliance; a distributed routing system which Consists of physical chassis, line cards, each line card with multiple ports, each line card with firmware for data-plane programming, network operating system and applications in the form of networking protocols and management protocols. 
 
-A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating system, network applications, management applications, etc. Similarly a Virtual Network Function is composed of multiple VMs, Containers, DBs, etc. 
-If such a distributed systems definition is flattened into a single "Router Node," all the granular relationships between the various components shall be lost. Failure modes internal to the router, correlation of events, linking MELT data loss ( single optical transceiver failing on a specific sub-port) to control-plane failure such as ISIS, BGP, routing table changes, etc. shall not be available. 
+A chassis-based distributed router such as Cisco 8k/ASR9k, Juniper MX/PTX, Nokia SR/IXR, etc. contains Chassis, Fan trays, power supply modules, fabric cards, multiple Route processors, line cards and thousands of logical interfaces, operating system, network applications, management applications, etc. 
+
+Similarly a Virtual Network Function may be composed of multiple VMs, Containers, DBs, etc. 
+
+If the definition of such distributed systems is flattened into a single "Router Node," all the granular relationships between the various components shall be lost. Failure modes internal to the router, correlation of events, linking MELT data loss ( single optical transceiver failing on a specific sub-port) to control-plane failure such as ISIS, BGP, routing table changes, etc. shall not be available. 
 
 Therefore for such a system, a Heterogeneous Graph is better equipped to represent complex modelling using Structural Hierarchy and Composition. Let's explore the architecture of such a Heterogenous Graph.
 
