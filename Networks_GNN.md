@@ -18,7 +18,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   - total number of edges in a graph $\text{mode}(E)$ is commonly called the `Degree of the graph`
      - The **size** of the graph is $|E| = m$ (total edges).
 
-Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge.
+Each element/member of $$V$$ (i.e. individual node $$v_i$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge.
 
 In the context of networking infrastructure; network devices such as routers, can be represented as a set of vertices ($$V$$). Links connecting these network devices can be represented as a set of edges ($$E$$). Together the node/routers and edges/links form the entire network ($$G$$). Further, a router or a link between two routers could have properties encoded in a feature vector  $$x_v$$ or $$x_e$$ : 
 
