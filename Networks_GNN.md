@@ -11,7 +11,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
      
 - Individual edges $$e_1$$ to $$e_m$$ are all members of $$E$$
   - \$`E = \{e_1, e_2, ...e_k,..., e_m\}`$
-  -  $`e_k \in E`$
+  - therefore $$e_k$$ belong to set E. $`e_k \in E`$
   -  $$e_k$$ connects two nodes $$v_i$$ and $$v_j$$. This can also be represented as \$`e_k = \{v_i, v_j\}`$
   - since edges connect two vertices there must be two vertices, one on each end of the node
   - the only exception is when an edge connects back into the origination node looping onto itself.
