@@ -3,7 +3,7 @@
 ## Graphs
 A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ where $$V$$ represents a `set of vertices` and $$E$$ represents a `set of edges` connecting these nodes. 
 - Individual vertices $$v_1$$ to $$v_n$$ are all members of $$V$$
-  - \$`V = \{v_1, v_2, ...v_k,..., v_n\}`$
+  - \$`V = \{v_1, v_2,..., v_n\}`$
   - vertices can exist independently without being connected to any edges
   - in most cases however, vertices are connected one or multiple edges 
      
