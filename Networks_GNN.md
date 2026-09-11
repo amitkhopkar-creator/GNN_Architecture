@@ -6,7 +6,8 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   - \$`V = \{v_1, v_2,..., v_n\}`$
   - vertices can exist independently without being connected to any edges
   - in most cases however, vertices are connected one or multiple edges
-  - total number of nodes in a graph $\text{mode}(V)$ is commonly called the order of the graph 
+  - total number of nodes in a graph $\text{mode}(V)$ is commonly called the order of the graph
+    - **order** of the graph is $|V| = n$ (total vertices)
      
 - Individual edges $$e_1$$ to $$e_m$$ are all members of $$E$$
   - \$`E = \{e_1, e_2, ...e_k,..., e_m\}`$
@@ -15,6 +16,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   - since edges connect two vertices there must be two vertices, one on each end of the node
   - the only exception is when an edge connects back into the origination node looping onto itself.
   - total number of edges in a graph $\text{mode}(E)$ is commonly called the degree of the graph
+     - The **size** of the graph is $|E| = m$ (total edges).
 
 Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge.
 
