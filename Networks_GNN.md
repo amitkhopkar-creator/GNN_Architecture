@@ -26,6 +26,8 @@ In the context of networking infrastructure; network devices such as routers, ca
 
 Feature vector representation for a simple, consumer-grade home router (used for machine learning and classification tasks).
 
+$$x = [x_1,x_2,x_3,x_4,x_5,x_6,x_7,x_8,x_9,x_{10}]$$
+
 $$x = [4, 1, 128, 1000, 2.4, 5.0, 1200, 1, 0, 12]$$
 
 | Vector Index | Feature Name | Value | Description / Unit |
