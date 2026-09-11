@@ -24,10 +24,12 @@ When two vertices are directly connected (via a common edge) then the two vertic
 **Adjacent Edges**
 Edges that share one common vertices then they are called Adjacent edges. For e.g. If Edge A connects vertex 1 to vertex 2, and Edge B connects vertex 2 to vertex 3, Edge A and Edge B are adjacent edges because they both touch vertex 2.
 
+**Multiple Edges or Parallel Edges** \n
+When two edges share common vertices on both ends, they would be parallel edges (also called multiple edges), which connect the exact same two vertices.For e.g. Edge C connects vertex 3 and vertex 4, Edge D connects vertex 3 and vertex 4, and Edge E also connected vertex 3 and vertex 4 when edges C,D and E are parallel o 
 
 ## Features
 
-Individual vertices $$v_i$$ and individual edges $$e_k$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge.
+Individual vertices $$v_i$$ and individual edges $$e_k$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge. r multiple edges. 
 
 In the context of networking infrastructure; network devices such as routers, can be represented as a set of vertices ($$V$$). Links connecting these network devices can be represented as a set of edges ($$E$$). Together the node/routers and edges/links form the entire network ($$G$$). Further, a router or a link between two routers could have properties encoded in a feature vector  $$x_v$$ or $$x_e$$ : 
 
