@@ -14,6 +14,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   -  $$e_k$$ connects two nodes for e.g. $$e_k$$ connects $$v_i$$ and $$v_j$$ 
   - since edges connect two vertices there must be two vertices, one on each end of the node
   - the only exception is when an edge connects back into the origination node looping onto itself.
+  - total number of edges in a graph $\text{mode}(E)$ is commonly called the degree of the graph
 
 Each element/member of $$V$$ (i.e. individual node $$v$$ ) and individual edges $$e$$ can be tagged with a `set of attributes/properties` which are called features. These features are encoded as a feature vector $x_v$ for a vertex and $x_e$ for an edge.
 
