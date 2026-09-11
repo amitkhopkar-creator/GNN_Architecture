@@ -18,6 +18,12 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   - total number of edges in a graph $\text{mode}(E)$ is commonly called the `Degree of the graph`
      - The **size** of the graph is $|E| = m$ (total edges).
 
+**Adjacent Vertices**
+When two vertices are directly connected (via a common edge) then the two vertices are Adjacent. In this context, the vertices are called neighbors
+
+**Adjacent Edges**
+Edges that share one common vertices then they are called Adjacent edges. For e.g. If Edge A connects vertex 1 to vertex 2, and Edge B connects vertex 2 to vertex 3, Edge A and Edge B are adjacent edges because they both touch vertex 2.
+
 
 ## Features
 
