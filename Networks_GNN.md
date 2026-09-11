@@ -19,10 +19,10 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
      - The **size** of the graph is $|E| = m$ (total edges).
 
 **Adjacent Vertices**  
-When two vertices are directly connected (via a common edge) then the two vertices are Adjacent. In this context, the vertices are called neighbours. In this case the edge connecting the two vertices is said to be Incident to the two vertices. 
+When two vertices are directly connected (via a common edge) then the two vertices are `Adjacent vertices`. In this context, the vertices are called neighbours. In this case the edge connecting the two vertices is said to be `Incident` to the two vertices. 
 
 **Adjacent Edges**  
-Edges that share one common vertices then they are called Adjacent edges. For e.g. If Edge A connects vertex 1 to vertex 2, and Edge B connects vertex 2 to vertex 3, Edge A and Edge B are adjacent edges because they both touch vertex 2.
+Edges that share one common vertex are called `Adjacent Edges`. For e.g. If Edge A connects vertex 1 to vertex 2, and Edge B connects vertex 2 to vertex 3, Edge A and Edge B are adjacent edges because they both touch vertex 2.
 
 **Multiple Edges or Parallel Edges**   
 When two edges share common vertices on both ends, they would be parallel edges (also called multiple edges), which connect the exact same two vertices.For e.g. Edge C connects vertex 3 and vertex 4, Edge D connects vertex 3 and vertex 4, and Edge E also connected vertex 3 and vertex 4 when edges C,D and E are parallel or multiple edges.  
