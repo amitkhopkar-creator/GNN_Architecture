@@ -5,7 +5,8 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
 - Individual vertices $$v_1$$ to $$v_n$$ are all members of $$V$$
   - \$`V = \{v_1, v_2,..., v_n\}`$
   - vertices can exist independently without being connected to any edges
-  - in most cases however, vertices are connected one or multiple edges 
+  - in most cases however, vertices are connected one or multiple edges
+  - total number of nodes in a graph $\text{mode}(V)$ is commonly called the order of the graph 
      
 - Individual edges $$e_1$$ to $$e_m$$ are all members of $$E$$
   - \$`E = \{e_1, e_2, ...e_k,..., e_m\}`$
