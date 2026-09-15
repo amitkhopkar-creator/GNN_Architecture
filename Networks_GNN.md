@@ -16,7 +16,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   -  $$e_k$$ connects two nodes $$v_i$$ and $$v_j$$. This can also be represented as \$`e_k = \{v_i, v_j\}`$
   - since edges connect two vertices there must be two vertices, one on each end of the node
   - the only exception is when an edge connects back into the origination node looping onto itself.
-  - total number of edges in a graph $|E|$ is commonly called the `Size of the graph` $|E| = m$
+  - total number of edges in a graph $m$ is commonly called the `Size of the graph` $|E| = m$
   - The total degress of the graph is $2$ x $|E|)$ (2 x total edges).
 
 **Adjacent Vertices**  
