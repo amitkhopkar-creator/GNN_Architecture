@@ -17,7 +17,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   - since edges connect two vertices there must be two vertices, one on each end of the node
   - the only exception is when an edge connects back into the origination node looping onto itself.
   - total number of edges in a graph $\text{mode}(E)$ is commonly called the `Degree of the graph`
-     - The **size** of the graph is $|E| = m$ or $2 x |E|$ (2 x total edges).
+     - The **size** of the graph is $|E| = m$ or 2 x |E| (2 x total edges).
 
 **Adjacent Vertices**  
 When two vertices are directly connected (via a common edge) then the two vertices are `Adjacent vertices`. In this context, the vertices are called neighbours. In this case the edge connecting the two vertices is said to be `Incident` to the two vertices. 
