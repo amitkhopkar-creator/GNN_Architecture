@@ -9,6 +9,7 @@ A Graph is a collection of nodes/vertices and edges denoted as $$G = (V,E)$$ whe
   - total number of nodes in a graph $\text{mode}(V)$ is commonly called the `Order of the graph`
     - **order** of the graph is $|V| = n$ (total vertices)
   - total number of edges that are incident at a vertex is called the `Degree of the Vertex`
+    - therefore if a vertex has one vertex  edges
      
 - Individual edges $$e_1$$ to $$e_m$$ are all members of $$E$$
   - \$`E = \{e_1, e_2, ...e_k,..., e_m\}`$
