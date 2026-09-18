@@ -94,7 +94,7 @@ Something should be a `Vertex / Node` if it can:
 
 **Edges / links ($$e$$)**
 
-Individual edges ($$e$$) define relationships between any individual vertex's, for e.g. a link $$e$$ connecting $$v_1$$ and $$v_2$$. A certain type of edge relationship is defined in the ontology through a Triple syntax `[Vertex1]` — `PREDICATE` → `[Vertex2]`.
+Individual edges ($$e$$) define relationships between any individual vertex's, for e.g. a link $$e$$ connecting $$v_1$$ and $$v_2$$. A certain type of edge relationship is defined in the ontology through a Triple syntax `[Subject]` — `PREDICATE` → `[Object]`. E.g. `[Vertex1]` — `BELONGS-TO` → `[Vertex2]` 
 
 A predicate is the part of a sentence that contains the verb and tells what action the subject is doing or what state the subject is in.
 
