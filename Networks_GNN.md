@@ -556,3 +556,10 @@ The local domain pushes a clean schema definition that matches what the master c
 ### How the Cross-Domain Layer Uses It
 The master Cross-Domain GNN reads this JSON. It doesn't know *why* the capacity buffer dropped from `0.45` to `0.05` (it doesn't care if it was a line card failure, an optical fiber cut, or a software bug). It only sees that **Domain A's capacity is exhausted**, allowing it to immediately deduce that Domain A is the bottleneck causing the end-to-end subscriber service speed to drop.
 
+
+## Resources 
+https://developer.nvidia.com/blog/a-data-scientists-guide-to-gradient-descent-and-backpropagation-algorithms/
+https://brilliant.org/wiki/backpropagation/
+http://neuralnetworksanddeeplearning.com/chap2.html
+https://www.jeremyjordan.me/neural-networks-training/
+
