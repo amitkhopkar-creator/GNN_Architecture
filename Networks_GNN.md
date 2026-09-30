@@ -559,7 +559,14 @@ The master Cross-Domain GNN reads this JSON. It doesn't know *why* the capacity 
 
 ## Resources 
 https://developer.nvidia.com/blog/a-data-scientists-guide-to-gradient-descent-and-backpropagation-algorithms/
+
 https://brilliant.org/wiki/backpropagation/
+
 http://neuralnetworksanddeeplearning.com/chap2.html
+
+https://www.jeremyjordan.me/logistic-regression/
+
+https://www.jeremyjordan.me/intro-to-neural-networks/
+
 https://www.jeremyjordan.me/neural-networks-training/
 
